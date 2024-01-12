@@ -5,7 +5,6 @@ import Sort from '../Components/Sort';
 import PizzaBlock from '../Components/PizzaBlock';
 import axios from 'axios';
 
-
 function Home() {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -15,9 +14,10 @@ function Home() {
       setItems(res.data);
       setIsLoading(false);
     });
+    window.scrollTo(0, 0);
   }, []);
   return (
-    <>
+    <div className="container">
       <div className="content__top">
         <Categories />
         <Sort />
@@ -28,7 +28,7 @@ function Home() {
           ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
           : items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)}
       </div>
-    </>
+    </div>
   );
 }
 
