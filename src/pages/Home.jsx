@@ -8,19 +8,35 @@ import axios from 'axios';
 function Home() {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [sortType, setSortType] = React.useState({
+    name: 'популярности',
+    sortProperty: 'rating',
+  });
+  const [categoryId, setCategoryId] = React.useState(0);
+
+  const orders = sortType.sortProperty.includes('-') ? 'asc' : 'desc';
+  
 
   React.useEffect(() => {
-    axios.get('https://659d3c46633f9aee7908fa23.mockapi.io/items').then((res) => {
-      setItems(res.data);
-      setIsLoading(false);
-    });
+    setIsLoading(true);
+    axios
+      .get(
+        `https://659d3c46633f9aee7908fa23.mockapi.io/items?${
+          categoryId > 0 ? `category=${categoryId}` : ''
+        }&sortBy=${sortType.sortProperty.replace('-', '')}&order=${orders}`
+      )
+      .then((res) => {
+        setItems(res.data);
+        setIsLoading(false);
+      });
     window.scrollTo(0, 0);
-  }, []);
+  }, [categoryId, sortType]);
+
   return (
     <div className="container">
       <div className="content__top">
-        <Categories />
-        <Sort />
+        <Categories value={categoryId} onClickCategory={(i) => setCategoryId(i)} />
+        <Sort value={sortType} onClickType={(i) => setSortType(i)} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
