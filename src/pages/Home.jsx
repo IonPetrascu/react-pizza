@@ -6,11 +6,13 @@ import PizzaBlock from '../Components/PizzaBlock';
 import axios from 'axios';
 import Pagination from '../Components/Pagination';
 import { eventWrapper } from '@testing-library/user-event/dist/utils';
+import { SearchContext } from '../App';
 
-function Home({ searchValue }) {
+function Home() {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [page, setPage] = React.useState(1);
+  const {searchValue} = React.useContext(SearchContext)
 
   const [sortType, setSortType] = React.useState({
     name: 'популярности',
@@ -24,7 +26,7 @@ function Home({ searchValue }) {
     axios
       .get(
         `https://659d3c46633f9aee7908fa23.mockapi.io/items?page=${page}&limit=4${
-          categoryId > 0 ? `category=${categoryId}` : ''
+          categoryId > 0 ? `&category=${categoryId}` : ''
         }&sortBy=${sortType.sortProperty.replace('-', '')}&order=${orders}${search}`,
       )
       .then((res) => {
