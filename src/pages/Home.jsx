@@ -1,17 +1,22 @@
 import React from 'react';
+import qs from 'qs';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import Skeleton from '../Components/PizzaBlock/Skeleton';
 import Categories from '../Components/Categories';
 import Sort from '../Components/Sort';
+import { sortList } from '../Components/Sort';
 import PizzaBlock from '../Components/PizzaBlock';
 import axios from 'axios';
 import Pagination from '../Components/Pagination';
 import { SearchContext } from '../App';
-import { setCategoryId,setPageCount } from '../redux/slices/filterSlice';
+import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
 
 function Home() {
-  const { sort, categoryId,pageCount } = useSelector((state) => state.filter);
-
+  const navigate = useNavigate();
+  const { sort, categoryId, pageCount } = useSelector((state) => state.filter);
+  const isSearch = React.useRef(false);
+  const isMounted = React.useRef(false);
   const sortType = sort.sortProperty;
   const dispatch = useDispatch();
 
@@ -23,13 +28,14 @@ function Home() {
     console.log(id);
     dispatch(setCategoryId(id));
   };
-  const onChangePage = (number)=>{
-    dispatch(setPageCount(number))
-  }
-  //const [categoryId, setCategoryId] = React.useState(0);
+  const onChangePage = (number) => {
+    dispatch(setPageCount(number));
+  };
+ 
   const orders = sortType.includes('-') ? 'asc' : 'desc';
   const search = searchValue ? `&search=${searchValue.toLowerCase()}` : '';
-  React.useEffect(() => {
+  
+  const fetchPizzas = () => {
     setIsLoading(true);
     axios
       .get(
@@ -43,10 +49,43 @@ function Home() {
       })
       .catch((error) => error);
     window.scrollTo(0, 0);
+  };
+
+
+  //Daca sau schimbat patametrele si a fost primul render 
+  React.useEffect(() => {
+    if (isMounted.current){
+      const queryString = qs.stringify({
+        sortProperty: sort.sortProperty,
+        categoryId,
+        pageCount,
+      });
+  
+      navigate(`?${queryString}`);
+    }
+    isMounted.current = true
   }, [categoryId, sortType, searchValue, pageCount]);
 
+ //Daca a fost primul render,atunci controlam Url-parametre si salvam in redux
+  React.useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+      const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
+      dispatch(setFilters({ ...params, sort }));
+      isSearch.current = true;
+    }
+  }, []);
 
-  const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
+//Daca a fost primul render atunci creme pizzele
+  React.useEffect(() => {
+    if (!isSearch.current) {
+      fetchPizzas();
+    }
+    isSearch.current = false;
+  }, [categoryId, sortType, searchValue, pageCount]);
+
+ 
+
   /*  const pizzas = items.filter((obj)=>{
     if(obj.title.toLowerCase().includes(searchValue.toLowerCase())){
       return true
@@ -55,6 +94,7 @@ function Home() {
   })
   .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />); */
 
+  const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
   const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
 
   return (
@@ -65,7 +105,7 @@ function Home() {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzas}</div>
-      <Pagination value={pageCount} onChangePage={(number)=>onChangePage(number)} />
+      <Pagination value={pageCount} onChangePage={(number) => onChangePage(number)} />
     </div>
   );
 }

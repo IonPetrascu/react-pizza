@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSort } from '../redux/slices/filterSlice';
 
-const sort = [
+export const sortList = [
   { name: 'популярности (DESC)', sortProperty: 'rating' },
   { name: 'популярности (ASC)', sortProperty: '-rating' },
   { name: 'цене (DESC)', sortProperty: 'price' },
@@ -14,16 +14,25 @@ const sort = [
 function Sort() {
   const dispatch = useDispatch();
   const sortType = useSelector((state) => state.filter.sort);
-  
+  const sortRef = React.useRef()
   const [displayPopup, setDisplayPopup] = React.useState(false);
  
+  useEffect(()=>{
+    const clickSort = (e)=>{
+      if(!e.target.closest('.sort')){
+        setDisplayPopup(false)
+      }
+    }
+   document.body.addEventListener('click',clickSort)
+   return () => document.body.removeEventListener('click',clickSort)
+  },[])
 
   const clickSort = (obj) => {
     setDisplayPopup(!displayPopup);
     dispatch(setSort(obj));
   };
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           width="10"
@@ -43,7 +52,7 @@ function Sort() {
       {displayPopup && (
         <div className="sort__popup">
           <ul>
-            {sort.map((sortEl, i) => (
+            {sortList.map((sortEl, i) => (
               <li
                 key={i}
                 onClick={() => clickSort(sortEl)}
