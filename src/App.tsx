@@ -1,6 +1,6 @@
 import './scss/app.scss';
 import NotFound from './pages/NotFound';
-import { Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import React from 'react';
