@@ -2,21 +2,20 @@ import React from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+
 import Skeleton from '../Components/PizzaBlock/Skeleton';
 import Categories from '../Components/Categories';
 import Sort from '../Components/Sort';
-import { sortList } from '../Components/Sort';
 import PizzaBlock from '../Components/PizzaBlock';
-
 import Pagination from '../Components/Pagination';
-import { SearchContext } from '../App';
+import { sortList } from '../Components/Sort';
 
 import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzasSlice';
 
 function Home() {
   const navigate = useNavigate();
-  const { sort, categoryId, pageCount } = useSelector((state) => state.filter);
+  const { sort, categoryId, pageCount ,searchValue} = useSelector((state) => state.filter);
   const { items, status } = useSelector((state) => state.pizzas);
 
   const isSearch = React.useRef(false);
@@ -25,7 +24,7 @@ function Home() {
   const sortType = sort.sortProperty;
   const dispatch = useDispatch();
 
-  const { searchValue } = React.useContext(SearchContext);
+  
 
   const onClickCategory = (id) => {
     console.log(id);

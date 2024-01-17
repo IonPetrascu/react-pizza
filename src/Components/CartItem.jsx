@@ -4,9 +4,11 @@ import { addItem ,minusItem,removeItem} from '../redux/slices/cartSlice';
 
 function CartItem({ id, title, price, imageUrl, type, size, count }) {
   const dispatch = useDispatch();
+
   const onClickPlus = () => {
     dispatch(addItem({ id }));
   };
+
   const onClickMinus = () => {
     dispatch(minusItem({ id }));
   };
@@ -15,9 +17,8 @@ function CartItem({ id, title, price, imageUrl, type, size, count }) {
     if(window.confirm('Are u sure you want to remove?')){
         dispatch(removeItem(id))
     }
-    
-    
   }
+  
   return (
     <div className="cart__item">
       <div className="cart__item-img">

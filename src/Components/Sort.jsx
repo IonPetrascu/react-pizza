@@ -12,10 +12,10 @@ export const sortList = [
 ];
 
 function Sort() {
-  const dispatch = useDispatch();
-  const sortType = useSelector((state) => state.filter.sort);
-  const sortRef = React.useRef()
   const [displayPopup, setDisplayPopup] = React.useState(false);
+  const sortType = useSelector((state) => state.filter.sort);
+  const dispatch = useDispatch();
+  const sortRef = React.useRef()
  
   useEffect(()=>{
     const clickSort = (e)=>{
@@ -31,6 +31,7 @@ function Sort() {
     setDisplayPopup(!displayPopup);
     dispatch(setSort(obj));
   };
+  
   return (
     <div ref={sortRef} className="sort">
       <div className="sort__label">
