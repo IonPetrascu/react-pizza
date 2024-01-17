@@ -1,6 +1,6 @@
 import React from 'react';
 import qs from 'qs';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Skeleton from '../Components/PizzaBlock/Skeleton';
@@ -15,7 +15,7 @@ import { fetchPizzas } from '../redux/slices/pizzasSlice';
 
 function Home() {
   const navigate = useNavigate();
-  const { sort, categoryId, pageCount ,searchValue} = useSelector((state) => state.filter);
+  const { sort, categoryId, pageCount, searchValue } = useSelector((state) => state.filter);
   const { items, status } = useSelector((state) => state.pizzas);
 
   const isSearch = React.useRef(false);
@@ -23,8 +23,6 @@ function Home() {
   const isMounted = React.useRef(false);
   const sortType = sort.sortProperty;
   const dispatch = useDispatch();
-
-  
 
   const onClickCategory = (id) => {
     console.log(id);
@@ -90,7 +88,11 @@ function Home() {
   .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />); */
 
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
-  const pizzas = items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const pizzas = items.map((pizza) => (
+    
+      <PizzaBlock  key={pizza.id} {...pizza} />
+    
+  ));
 
   return (
     <div className="container">
@@ -100,7 +102,7 @@ function Home() {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (
-        <div className='content__error-info'>
+        <div className="content__error-info">
           <h2>Что-то пошло не так... </h2>
           <p>Не удалось получить данные.Попробуйте повторить попытку позже</p>
         </div>
