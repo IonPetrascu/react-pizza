@@ -15,8 +15,8 @@ import { fetchPizzas } from '../redux/slices/pizzasSlice';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { sort, categoryId, pageCount, searchValue } = useSelector((state: any) => state.filter);
-  const { items, status } = useSelector((state: any) => state.pizzas);
+  const { sort, categoryId, pageCount, searchValue } = useSelector((state:any) => state.filter);
+  const { items, status } = useSelector((state:any) => state.pizzas);
 
   const isSearch = React.useRef(false);
 
@@ -25,7 +25,6 @@ const Home: React.FC = () => {
   const dispatch = useDispatch();
 
   const onClickCategory = (id:number) => {
-    console.log(id);
     dispatch(setCategoryId(id));
   };
   const onChangePage = (page:number) => {

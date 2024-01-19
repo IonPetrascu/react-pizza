@@ -4,7 +4,7 @@ const categories = [' Все', ' Мясные', 'Вегетарианская', 
 
 type CategoriesProps = {
   value: number;
-  onClickCategory: any;
+  onClickCategory: (idx: number) => void; //idx sau  orice denumire poate fi 
 };
 const Categories: React.FC<CategoriesProps> = ({ value, onClickCategory }) => {
   return (

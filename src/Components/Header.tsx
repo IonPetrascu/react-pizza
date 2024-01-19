@@ -11,7 +11,7 @@ const Header:React.FC = ()=> {
   const totalCount = items.reduce((sum:number, obj:any) => sum + obj.count, 0);
 
   const location = useLocation();
-  console.log(location,window.location);
+ 
   return (
     <div className="header">
       <div className="container">

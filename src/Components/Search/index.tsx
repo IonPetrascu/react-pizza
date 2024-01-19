@@ -10,13 +10,14 @@ const Search: React.FC = ({}) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const updateSearchValue = React.useCallback(
-    debounce((str:string) => {
+    debounce((str: string) => {
       dispatch(setSearchValue(str));
     }, 300),
     [],
   );
 
   const onClickClear = () => {
+
     setValue('');
     dispatch(setSearchValue(''));
     if (inputRef.current) {
@@ -25,7 +26,7 @@ const Search: React.FC = ({}) => {
     //sau inputRef.current?.focus()
   };
 
-  const onChangeInput = (event:any) => {
+  const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     updateSearchValue(event.target.value);
   };

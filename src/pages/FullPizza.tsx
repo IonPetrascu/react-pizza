@@ -25,7 +25,7 @@ const FullPizza: React.FC = () => {
     fetchPizza();
   }, [id]);
 
-  console.log(item);
+
 
   if (!item) {
     return <>Loading...</>

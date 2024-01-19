@@ -20,7 +20,9 @@ export const sortList = [
 
 ];
 
-
+/* type PopupClick = React.MouseEvent<HTMLBodyElement> & {
+  path: Node[]
+} */
 
 function Sort() {
   const [displayPopup, setDisplayPopup] = React.useState(false);
@@ -29,7 +31,7 @@ function Sort() {
   const sortRef = React.useRef()
  
   useEffect(()=>{
-    const clickSort = (e)=>{
+    const clickSort = (e/* :PopupClick */)=>{
       if(!e.target.closest('.sort')){
         setDisplayPopup(false)
       }
