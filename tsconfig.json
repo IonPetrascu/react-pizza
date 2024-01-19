@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "target": "es5", // Specify ECMAScript target version
+      "target": "ESNext", // Specify ECMAScript target version
       "lib": [
         "dom",
         "dom.iterable",
@@ -26,7 +26,7 @@
       "noFallthroughCasesInSwitch": true // Report errors for fallthrough cases in switch statement
     },
     "include": [
-      "src/**/*" // *** The files TypeScript should type check ***
+     "src", "src/@types"
     ],
     "exclude": ["node_modules", "build"] // *** The files to not type check ***
   }

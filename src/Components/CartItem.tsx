@@ -1,8 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { addItem ,minusItem,removeItem} from '../redux/slices/cartSlice';
+import { addItem, minusItem, removeItem } from '../redux/slices/cartSlice';
 
-function CartItem({ id, title, price, imageUrl, type, size, count }) {
+type CartItemProps = {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  type: string;
+  size: number;
+  count: number;
+};
+
+const CartItem: React.FC<CartItemProps> = ({ id, title, price, imageUrl, type, size, count }) => {
   const dispatch = useDispatch();
 
   const onClickPlus = () => {
@@ -13,12 +23,12 @@ function CartItem({ id, title, price, imageUrl, type, size, count }) {
     dispatch(minusItem({ id }));
   };
 
-  const onClickRemove = ()=>{
-    if(window.confirm('Are u sure you want to remove?')){
-        dispatch(removeItem(id))
+  const onClickRemove = () => {
+    if (window.confirm('Are u sure you want to remove?')) {
+      dispatch(removeItem(id));
     }
-  }
-  
+  };
+
   return (
     <div className="cart__item">
       <div className="cart__item-img">
@@ -26,10 +36,15 @@ function CartItem({ id, title, price, imageUrl, type, size, count }) {
       </div>
       <div className="cart__item-info">
         <h3>{title}</h3>
-        <p>{type} тесто, {size} см.</p>
+        <p>
+          {type} тесто, {size} см.
+        </p>
       </div>
       <div className="cart__item-count">
-        <div onClick={onClickMinus} className="button button--outline button--circle cart__item-count-minus">
+        <div
+          onClick={onClickMinus}
+          className="button button--outline button--circle cart__item-count-minus"
+        >
           <svg
             width="10"
             height="10"
@@ -48,7 +63,10 @@ function CartItem({ id, title, price, imageUrl, type, size, count }) {
           </svg>
         </div>
         <b>{count}</b>
-        <div onClick={onClickPlus} className="button button--outline button--circle cart__item-count-plus">
+        <div
+          onClick={onClickPlus}
+          className="button button--outline button--circle cart__item-count-plus"
+        >
           <svg
             width="10"
             height="10"
@@ -92,6 +110,6 @@ function CartItem({ id, title, price, imageUrl, type, size, count }) {
       </div>
     </div>
   );
-}
+};
 
 export default CartItem;

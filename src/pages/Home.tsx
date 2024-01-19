@@ -1,6 +1,6 @@
 import React from 'react';
 import qs from 'qs';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Skeleton from '../Components/PizzaBlock/Skeleton';
@@ -13,10 +13,10 @@ import { sortList } from '../Components/Sort';
 import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
 import { fetchPizzas } from '../redux/slices/pizzasSlice';
 
-function Home() {
+const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { sort, categoryId, pageCount, searchValue } = useSelector((state) => state.filter);
-  const { items, status } = useSelector((state) => state.pizzas);
+  const { sort, categoryId, pageCount, searchValue } = useSelector((state: any) => state.filter);
+  const { items, status } = useSelector((state: any) => state.pizzas);
 
   const isSearch = React.useRef(false);
 
@@ -24,12 +24,12 @@ function Home() {
   const sortType = sort.sortProperty;
   const dispatch = useDispatch();
 
-  const onClickCategory = (id) => {
+  const onClickCategory = (id:number) => {
     console.log(id);
     dispatch(setCategoryId(id));
   };
-  const onChangePage = (number) => {
-    dispatch(setPageCount(number));
+  const onChangePage = (page:number) => {
+    dispatch(setPageCount(page));
   };
 
   const orders = sortType.includes('-') ? 'asc' : 'desc';
@@ -37,6 +37,7 @@ function Home() {
 
   const getPizzas = async () => {
     dispatch(
+      //@ts-ignore
       fetchPizzas({
         orders,
         search,
@@ -88,11 +89,7 @@ function Home() {
   .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />); */
 
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
-  const pizzas = items.map((pizza) => (
-    
-      <PizzaBlock  key={pizza.id} {...pizza} />
-    
-  ));
+  const pizzas = items.map((pizza:any) => <PizzaBlock key={pizza.id} {...pizza} />);
 
   return (
     <div className="container">
@@ -110,9 +107,9 @@ function Home() {
         <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
       )}
 
-      <Pagination value={pageCount} onChangePage={(number) => onChangePage(number)} />
+      <Pagination value={pageCount} onChangePage={(number:number) => onChangePage(number)} />
     </div>
   );
-}
+};
 
 export default Home;
