@@ -1,50 +1,43 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSort, sortTypes } from '../redux/slices/filterSlice';
+import { SortPropertyEnum, setSort, sortTypes } from '../redux/slices/filterSlice';
+import { Sort } from '../redux/slices/filterSlice';
 
+type SortItem = {
+  name: string;
+  sortProperty: SortPropertyEnum;
+};
 
-
-/* type SortItem = {
-  name:string;
-  sortProperty:string;
-} */
-
-export const sortList = [
-  { name: 'популярности (DESC)', sortProperty: 'rating' },
-  { name: 'популярности (ASC)', sortProperty: '-rating' },
-  { name: 'цене (DESC)', sortProperty: 'price' },
-  { name: 'цене (ASC)', sortProperty: '-price' },
-  { name: 'алфавиту (DESC)', sortProperty: 'title' },
-  { name: 'алфавиту (ASC)', sortProperty: '-title' },
-  
-
+export const sortList: SortItem[] = [
+  { name: 'популярности (DESC)', sortProperty: SortPropertyEnum.RATING_DESC },
+  { name: 'популярности (ASC)', sortProperty: SortPropertyEnum.RATING_ASC },
+  { name: 'цене (DESC)', sortProperty: SortPropertyEnum.PRICE_DESC },
+  { name: 'цене (ASC)', sortProperty: SortPropertyEnum.PRICE_ASC },
+  { name: 'алфавиту (DESC)', sortProperty: SortPropertyEnum.TITLE_DESC },
+  { name: 'алфавиту (ASC)', sortProperty: SortPropertyEnum.TITLE_ASC },
 ];
 
-/* type PopupClick = React.MouseEvent<HTMLBodyElement> & {
-  path: Node[]
-} */
-
-function Sort() {
+function SortCategory() {
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const sortType = useSelector(sortTypes);
   const dispatch = useDispatch();
-  const sortRef = React.useRef()
- 
-  useEffect(()=>{
-    const clickSort = (e/* :PopupClick */)=>{
-      if(!e.target.closest('.sort')){
-        setDisplayPopup(false)
-      }
-    }
-   document.body.addEventListener('click',clickSort)
-   return () => document.body.removeEventListener('click',clickSort)
-  },[])
+  const sortRef = React.useRef<HTMLDivElement>(null);
 
-  const clickSort = (obj) => {
+  useEffect(() => {
+    const clickSort = (event: MouseEvent) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
+        setDisplayPopup(false);
+      }
+    };
+    document.body.addEventListener('click', clickSort);
+    return () => document.body.removeEventListener('click', clickSort);
+  }, []);
+
+  const clickSort = (obj: Sort) => {
     setDisplayPopup(!displayPopup);
     dispatch(setSort(obj));
   };
-  
+
   return (
     <div ref={sortRef} className="sort">
       <div className="sort__label">
@@ -70,7 +63,7 @@ function Sort() {
               <li
                 key={i}
                 onClick={() => clickSort(sortEl)}
-                className={sortType.sortProperty === Object.sortProperty ? 'active' : ''}
+                className={sortType.sortProperty === sortEl.sortProperty ? 'active' : ''}
               >
                 {sortEl.name}
               </li>
@@ -82,4 +75,4 @@ function Sort() {
   );
 }
 
-export default Sort;
+export default SortCategory;

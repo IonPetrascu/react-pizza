@@ -1,48 +1,48 @@
 import React from 'react';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Skeleton from '../Components/PizzaBlock/Skeleton';
 import Categories from '../Components/Categories';
-import Sort from '../Components/Sort';
+import SortCategory from '../Components/Sort';
 import PizzaBlock from '../Components/PizzaBlock';
 import Pagination from '../Components/Pagination';
 import { sortList } from '../Components/Sort';
 
 import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
-import { fetchPizzas } from '../redux/slices/pizzasSlice';
+import { SearchPizzaParams, fetchPizzas } from '../redux/slices/pizzasSlice';
+import { useAppDispatch } from '../redux/store';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { sort, categoryId, pageCount, searchValue } = useSelector((state:any) => state.filter);
-  const { items, status } = useSelector((state:any) => state.pizzas);
+  const { sort, categoryId, pageCount, searchValue } = useSelector((state: any) => state.filter);
+  const { items, status } = useSelector((state: any) => state.pizzas);
 
   const isSearch = React.useRef(false);
 
   const isMounted = React.useRef(false);
-  const sortType = sort.sortProperty;
-  const dispatch = useDispatch();
+  const sortProperty = sort.sortProperty;
+  const dispatch = useAppDispatch();
 
-  const onClickCategory = (id:number) => {
+  const onClickCategory = (id: number) => {
     dispatch(setCategoryId(id));
   };
-  const onChangePage = (page:number) => {
+  const onChangePage = (page: number) => {
     dispatch(setPageCount(page));
   };
 
-  const orders = sortType.includes('-') ? 'asc' : 'desc';
+  const orders = sortProperty.includes('-') ? 'asc' : 'desc';
   const search = searchValue ? `&search=${searchValue.toLowerCase()}` : '';
 
   const getPizzas = async () => {
     dispatch(
-      //@ts-ignore
       fetchPizzas({
         orders,
         search,
         categoryId,
         pageCount,
-        sortType,
+        sortProperty,
       }),
     );
     window.scrollTo(0, 0);
@@ -60,16 +60,26 @@ const Home: React.FC = () => {
       navigate(`?${queryString}`);
     }
     isMounted.current = true;
-  }, [categoryId, sortType, searchValue, pageCount]);
+  }, [categoryId, sortProperty, searchValue, pageCount]);
 
   //Daca a fost primul render,atunci controlam Url-parametre si salvam in redux
   React.useEffect(() => {
     if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
+      const params = qs.parse(window.location.search.substring(1)) as unknown as SearchPizzaParams;
       const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
-      dispatch(setFilters({ ...params, sort }));
-      isSearch.current = true;
+      console.log(params);
+      console.log(params);
+
+      dispatch(
+        setFilters({
+          searchValue: params.search,
+          categoryId: Number(params.categoryId),
+          pageCount: Number(params.pageCount),
+          sort: sort ? sort : sortList[0],
+        }),
+      );
     }
+    isSearch.current = true;
   }, []);
 
   //Daca a fost primul render atunci creme pizzele
@@ -77,7 +87,7 @@ const Home: React.FC = () => {
     getPizzas();
 
     isSearch.current = false;
-  }, [categoryId, sortType, searchValue, pageCount]);
+  }, [categoryId, sortProperty, searchValue, pageCount]);
 
   /*  const pizzas = items.filter((obj)=>{
     if(obj.title.toLowerCase().includes(searchValue.toLowerCase())){
@@ -88,13 +98,13 @@ const Home: React.FC = () => {
   .map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />); */
 
   const skeletons = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
-  const pizzas = items.map((pizza:any) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const pizzas = items.map((pizza: any) => <PizzaBlock key={pizza.id} {...pizza} />);
 
   return (
     <div className="container">
       <div className="content__top">
         <Categories value={categoryId} onClickCategory={onClickCategory} />
-        <Sort />
+        <SortCategory />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (
@@ -106,7 +116,7 @@ const Home: React.FC = () => {
         <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
       )}
 
-      <Pagination value={pageCount} onChangePage={(number:number) => onChangePage(number)} />
+      <Pagination value={pageCount} onChangePage={(number: number) => onChangePage(number)} />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addItem, selectCartItemById } from '../../redux/slices/cartSlice';
 
 import { Link } from 'react-router-dom';
+import { CartItem } from '../../redux/slices/cartSlice';
 
 const typeNames = ['тонкое', 'традиционное'];
 type PizzaBlockProps = {
@@ -14,16 +15,21 @@ type PizzaBlockProps = {
   types: number[];
 };
 
-
 const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, imageUrl, price, sizes, title, types }) => {
   const dispatch = useDispatch();
   const [activeType, setActiveType] = React.useState(0);
   const [activeSize, setActiveSize] = React.useState(0);
-  const count = useSelector(selectCartItemById(id));
-  const addedCount = count ? count.count : 0;
+  const obj = useSelector(selectCartItemById(id));
+  let addedCount;
+  if (obj?.count) {
+    addedCount = obj.count;
+    
+  } else {
+    addedCount = 0;
+  }
 
   const onClickAdd = () => {
-    const item = {
+    const item: CartItem = {
       id,
       title,
       price,
@@ -80,7 +86,7 @@ const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, imageUrl, price, sizes, tit
             />
           </svg>
           <span>Добавить</span>
-          {addedCount > 0 && <i>{addedCount}</i>}
+          {addedCount ? <i>{addedCount}</i> : <i>0</i>}
         </div>
       </div>
     </div>
