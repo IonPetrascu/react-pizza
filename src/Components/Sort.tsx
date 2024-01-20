@@ -16,8 +16,7 @@ export const sortList: SortItem[] = [
   { name: 'алфавиту (DESC)', sortProperty: SortPropertyEnum.TITLE_DESC },
   { name: 'алфавиту (ASC)', sortProperty: SortPropertyEnum.TITLE_ASC },
 ];
-
-function SortCategory() {
+const SortCategory: React.FC = React.memo(() => {
   const [displayPopup, setDisplayPopup] = React.useState(false);
   const sortType = useSelector(sortTypes);
   const dispatch = useDispatch();
@@ -73,6 +72,6 @@ function SortCategory() {
       )}
     </div>
   );
-}
+});
 
 export default SortCategory;

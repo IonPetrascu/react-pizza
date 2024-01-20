@@ -25,9 +25,10 @@ const Home: React.FC = () => {
   const sortProperty = sort.sortProperty;
   const dispatch = useAppDispatch();
 
-  const onClickCategory = (id: number) => {
+  const onClickCategory = React.useCallback((id: number) => {
     dispatch(setCategoryId(id));
-  };
+  },[])
+
   const onChangePage = (page: number) => {
     dispatch(setPageCount(page));
   };
@@ -67,8 +68,9 @@ const Home: React.FC = () => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1)) as unknown as SearchPizzaParams;
       const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
-      console.log(params);
-      console.log(params);
+
+
+      
 
       dispatch(
         setFilters({
