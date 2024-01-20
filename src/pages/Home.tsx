@@ -10,9 +10,10 @@ import PizzaBlock from '../Components/PizzaBlock';
 import Pagination from '../Components/Pagination';
 import { sortList } from '../Components/Sort';
 
-import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
-import { SearchPizzaParams, fetchPizzas } from '../redux/slices/pizzasSlice';
+import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filter/slice';
+import { fetchPizzas } from '../redux/slices/asyncActions';
 import { useAppDispatch } from '../redux/store';
+import { SearchPizzaParams } from '../redux/slices/pizzas/types';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Home: React.FC = () => {
 
   const onClickCategory = React.useCallback((id: number) => {
     dispatch(setCategoryId(id));
-  },[])
+  }, []);
 
   const onChangePage = (page: number) => {
     dispatch(setPageCount(page));
@@ -68,9 +69,6 @@ const Home: React.FC = () => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1)) as unknown as SearchPizzaParams;
       const sort = sortList.find((obj) => obj.sortProperty === params.sortProperty);
-
-
-      
 
       dispatch(
         setFilters({
